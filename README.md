@@ -15,7 +15,7 @@ npm install nextdrive-client
 
 ## Usage
 ```ts
-import NextDriveUploader from 'nextdrive-client';
+import {NextDriveUploader} from 'nextdrive-client';
 
 const uploader = new NextDriveUploader({
     rootUrl:"http://localhost:4000",
