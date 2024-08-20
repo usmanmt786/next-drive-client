@@ -50,4 +50,38 @@ export  class NextDriveUploader {
 
         }
     }
+
+
+    async delete(p:{
+        folder: string, files:  string[]
+    }) {
+        {
+            const finalUrl = this.root.endsWith("/")?this.root:`${this.root}/`
+            const URL = `${finalUrl}${p.folder}`;
+
+            try {
+                const formData = new FormData();
+
+                for(const file of p.files){
+                    formData.append('files', file);
+                }
+
+                const resp = await fetch(URL, {
+                    method: "DELETE",
+                    body: formData,
+                    headers:{
+                        'x-api-key': this.api
+                    }
+                });
+                const data = await resp.json();
+                return data;
+            } catch (error) {
+                console.error("Delete Error:",error);
+                return { success: false, message: "Failed to Delete" }
+
+            }
+
+
+        }
+    }
 }

@@ -22,9 +22,21 @@ const uploader = new NextDriveUploader({
     apiKey: process.ev.API_KEY,
 });
 
+```
+### Upload Files
+```ts
 const response = await uploader.upload({
     folder: "products",
     files: [File]
+});
+```
+
+
+### Delete Files
+```ts
+const response = await uploader.delete({
+    folder: "products",
+    files: [string]
 });
 
 ```
