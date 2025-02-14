@@ -1,87 +1,59 @@
+export class NextDriveUploader {
+  private api: string;
+  private root: string;
 
-export  class NextDriveUploader {
+  constructor({ rootUrl, apiKey }: { rootUrl: string; apiKey: string }) {
+    this.api = apiKey;
+    this.root = rootUrl;
+  }
 
-    private api: string;
-    private root: string;
+  async upload(p: { folder: string; files: File[] }) {
+    {
+      const finalUrl = this.root.endsWith("/") ? this.root : `${this.root}/`;
+      const URL = `${finalUrl}upload/${p.folder}`;
 
-    constructor({ rootUrl,
-        apiKey
-    }:
-        {
-            rootUrl: string,
-            apiKey: string,
+      try {
+        const formData = new FormData();
+
+        for (const file of p.files) {
+          formData.append("files", file);
         }
-    ) {
 
-        this.api = apiKey;
-        this.root = rootUrl;
-
+        const resp = await fetch(URL, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "x-api-key": this.api,
+          },
+        });
+        const data = await resp.json();
+        return data;
+      } catch (error) {
+        console.error("Upload Error:", error);
+        return { success: false, message: "Failed to upload" };
+      }
     }
+  }
 
-    async upload(p:{
-        folder: string, files:  File[]
-    }) {
-        {
-            const finalUrl = this.root.endsWith("/")?this.root:`${this.root}/`
-            const URL = `${finalUrl}upload/${p.folder}`;
+  async delete(p: { folder: string; files: string[] }) {
+    {
+      const finalUrl = this.root.endsWith("/") ? this.root : `${this.root}/`;
+      const URL = `${finalUrl}${p.folder}`;
 
-            try {
-                const formData = new FormData();
-
-                for(const file of p.files){
-                    formData.append('files', file);
-                }
-
-                const resp = await fetch(URL, {
-                    method: "POST",
-                    body: formData,
-                    headers:{
-                        'x-api-key': this.api
-                    }
-                });
-                const data = await resp.json();
-                return data;
-            } catch (error) {
-                console.error("Upload Error:",error);
-                return { success: false, message: "Failed to upload" }
-
-            }
-
-
-        }
+      try {
+        const resp = await fetch(URL, {
+          method: "DELETE",
+          body: JSON.stringify({ files: p.files }),
+          headers: {
+            "x-api-key": this.api,
+          },
+        });
+        const data = await resp.json();
+        return data;
+      } catch (error) {
+        console.error("Delete Error:", error);
+        return { success: false, message: "Failed to Delete" };
+      }
     }
-
-
-    async delete(p:{
-        folder: string, files:  string[]
-    }) {
-        {
-            const finalUrl = this.root.endsWith("/")?this.root:`${this.root}/`
-            const URL = `${finalUrl}${p.folder}`;
-
-            try {
-                const formData = new FormData();
-
-                for(const file of p.files){
-                    formData.append('files', file);
-                }
-
-                const resp = await fetch(URL, {
-                    method: "DELETE",
-                    body: formData,
-                    headers:{
-                        'x-api-key': this.api
-                    }
-                });
-                const data = await resp.json();
-                return data;
-            } catch (error) {
-                console.error("Delete Error:",error);
-                return { success: false, message: "Failed to Delete" }
-
-            }
-
-
-        }
-    }
+  }
 }
