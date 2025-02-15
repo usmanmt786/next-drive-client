@@ -46,6 +46,7 @@ export class NextDriveUploader {
           body: JSON.stringify({ files: p.files }),
           headers: {
             "x-api-key": this.api,
+            "Content-Type": "application/json",
           },
         });
         const data = await resp.json();
